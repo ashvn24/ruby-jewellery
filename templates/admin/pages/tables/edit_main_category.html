@@ -1,0 +1,23 @@
+{% extends 'adminbase.html'%}
+{% block content %}
+{% for i in maincategory %}
+<div class="col-md-8 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Edit Main Category</h4>
+        <form class="forms-sample" action="/user/update_main_category/{{i.id}}" method="POST">
+            {% csrf_token %}
+          <div class="form-group row">
+            <label for="exampleInputUsername2" class="col-sm-3 col-form-label"> Category </label>
+            <div class="col-sm-9">
+              <input name="name" type="text" value="{{i.name}}" class="form-control" id="exampleInputUsername2" placeholder="Fullname">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+          <button class="btn btn-light">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}

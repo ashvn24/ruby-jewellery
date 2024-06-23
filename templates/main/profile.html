@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="page-content-wrapper" class="p-9">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+<!-- My Account Page Start -->
+<div class="myaccount-page-wrapper">
+    <!-- My Account Tab Menu Start -->
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="myaccount-tab-menu nav" role="tablist">
+                <a href="#account-info" class="active" data-toggle="tab"><i class="fa fa-user"></i> Account Details</a>
+                
+                <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a></a>
+
+                <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
+
+                <a href="#payment-method" data-toggle="tab"><i class="fa fa-credit-card"></i> Wallet</a>
+
+                <a href="#address" data-toggle="tab"><i class="fa fa-map-marker"></i> address</a>
+
+                
+
+                <a href="{%url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+            </div>
+        </div>
+        <!-- My Account Tab Menu End -->
+
+        <!-- My Account Tab Content Start -->
+        <div class="col-lg-9 mt-5 mt-lg-0">
+            <div class="tab-content" id="myaccountContent">
+                
+                <!-- Single Tab Content End --> 
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade show active" id="account-info" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Account Details</h3>
+                        
+                        <div class="account-details-form">
+                            <form id="profile-form" action="/profile_update/{{user.id}}" method="post">
+                                {% csrf_token %}
+                            
+                                <div class="single-input-item">
+                                    <label for="display-name" class="required">Full Name</label>
+                                    <input type="text" id="display-name" name="full_name" value="{{user.full_name}}" placeholder="Full Name" />
+                                </div>
+                            
+                                <div class="single-input-item">
+                                    <label for="email" class="required">Email Address</label>
+                                    <input type="email" id="email" name="email" value="{{user.email}}" placeholder="Email Address" required />
+                                </div>
+                            
+                                <div class="single-input-item">
+                                    <label for="phno" class="required">Phone No.</label>
+                                    <input type="text" id="phno" name="ph_no" value="{{user.ph_no}}" placeholder="Phone Number" required />
+                                </div>
+                            
+                            
+                                
+
+                                <fieldset>
+                                    <legend>Password change</legend>
+                                    <div class="single-input-item">
+                                        <label for="current-pwd" class="required">Current
+                                            Password</label>
+                                        <input type="password" id="current-pwd"
+                                               name="password" placeholder="Current Password"/>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="single-input-item">
+                                                <label for="new-pwd" class="required">New
+                                                    Password</label>
+                                                <input type="password" id="new-pwd" name="newpass"
+                                                       placeholder="New Password"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="single-input-item">
+                                                <label for="confirm-pwd" class="required">Confirm
+                                                    Password</label>
+                                                <input type="password" id="confirm-pwd" name="newpassconf"
+                                                       placeholder="Confirm Password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                            <li{% if message.tags %} style="color:red;" class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </fieldset>
+
+                                <div class="single-input-item">
+                                    <button class="btn-login btn-add-to-cart" id="submit-button">Update Profile</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="orders" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Orders</h3>
+
+                        <div class="myaccount-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for i in orders %}
+                                <tr>
+                                    <td>{{i.id}}</td>
+                                    <td>{{i.date}}</td>
+                                    <td>{{i.status}}</td>
+                                    <td>{{i.amount}}</td>
+                                    <td><a href="{% url 'order_details' i.id %}" class="btn-add-to-cart">View</a></td>
+                                </tr>
+                                    {% endfor %}
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="download" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Downloads</h3>
+
+                        <div class="myaccount-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Date</th>
+                                    <th>Expire</th>
+                                    <th>Download</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr>
+                                    <td>Haven - Free Real Estate PSD Template</td>
+                                    <td>Aug 22, 2018</td>
+                                    <td>Yes</td>
+                                    <td><a href="#" class="btn-add-to-cart">Download File</a></td>
+                                </tr>
+                                <tr>
+                                    <td>HasTech - Profolio Business Template</td>
+                                    <td>Sep 12, 2018</td>
+                                    <td>Never</td>
+                                    <td><a href="#" class="btn-add-to-cart">Download File</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="payment-method" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>My Wallet <span class="wallet-amount" style="float: right; margin-top: 5px; font-size: 15px; margin-right: 10px;">Balance: ₹ {{cstmuser.wallet_bal}}</span></h3>
+                        <div class="myaccount-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>At</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for i in wallet %}
+                                <tr>
+                                    
+                                    <td>{{i.created_at}}</td>
+                                    
+                                    <td style="color: green;"><strong>{{i.status}}</strong></td>
+                                    <td>{{i.amount}}</td>
+                                    
+                                </tr>
+                                {% endfor %}
+                                
+                                </tbody>
+                            </table>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="address" role="tabpanel" >
+                    <div class="myaccount-content">
+                        <div>
+
+                        <h3>Billing Address  <a href="{% url 'add_addrs'%}" class="btn-add-to-cart d-inline-block"><i class="fa fa-edit"></i>
+                            Add Address</a></h3>
+                        
+                        </div>
+        
+                            {% for ad in addrs %}
+                        <address>
+                            <p><strong>{{ad.first_name}}</strong></p>
+                            <p></p>
+                            <p><br>
+                                {{ad.email}}<br>
+                                {{ad.addressline1}}</p>
+                            <p>Mobile: {{ad.phoneNumber}}</p>
+                        </address>
+                            
+                        <a href="/edit_addrs/{{ad.id}}" class="btn-add-to-cart d-inline-block"><i class="fa fa-edit"></i>
+                            Edit Address</a>
+                        <a href="{% url 'delete_addrs' ad.id %}#{{ad.id}}" class="btn-add-to-cart d-inline-block"><i class="fa fa-edit"></i>
+                                Delete Address</a>
+                            {% endfor %}
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+                
+                
+            </div>
+        </div>
+        <!-- My Account Tab Content End -->
+    </div>
+</div>
+<!-- My Account Page End -->
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    document.getElementById('profile-form').addEventListener('submit', function (event) {
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phno').value;
+
+        let isValid = true;
+
+        if (!validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (!validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        // Regular expression for a 10-digit phone number
+        const phoneRegex = /^[0-9]{10}$/;
+        return phoneRegex.test(phone);
+    }
+</script>
+{% endblock script %}

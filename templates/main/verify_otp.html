@@ -1,0 +1,89 @@
+{% extends 'base1.html' %}
+
+{% block content %}
+<div id="page-content-wrapper" class="p-9">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 m-auto">
+        <div class="login-register-wrapper">
+          <nav class="nav login-reg-tab-menu">
+            <a class="active" id="login-tab" data-toggle="tab" href="#login">Enter OTP</a>
+          </nav>
+          <div class="tab-content" id="login-reg-tabcontent">
+            <div class="tab-pane fade show active" id="login" role="tabpanel">
+              <div class="login-reg-form-wrap">
+                <form method="post" id="otp-form">
+                  {% csrf_token %}
+                  <div class="single-input-item">
+                    <input type="text" id="otp" name="otp" placeholder="Enter the OTP" />
+                  </div>
+                  <div class="single-input-item">
+                    <button class="btn-login" type="submit" id="submit-button">Login</button>
+                  </div>
+                </form>
+                <div id="countdown-timer" style="color:red;">
+                  <span id="minutes">01</span>:<span id="seconds">00</span>
+                </div>
+                <div id="otp-expired-message" style="display: none;color:red;">
+                  OTP has expired
+                </div>
+                <div id="otp-resend-button" style="display: none;margin-top:30px">
+                  <form method="post" action="{% url 'resend_otp' %}">
+                    {% csrf_token %}
+                    <button type="submit">Resend OTP</button>
+                  </form>
+                </div>
+                <div>
+            
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // Function to update the countdown timer
+  // Function to update the countdown timer
+function updateTimer(minutes, seconds) {
+  document.getElementById('minutes').textContent = minutes;
+  document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
+}
+
+// Countdown timer
+let countdown = 60; // 60 seconds
+let countdownInterval = setInterval(function () {
+  const minutes = Math.floor(countdown / 60);
+  const seconds = countdown % 60;
+  updateTimer(minutes, seconds);
+  countdown--;
+
+  if (countdown < 0) {
+    clearInterval(countdownInterval);
+    // Handle the expiration of the timer here
+    document.getElementById('submit-button').disabled = true; // Disable the submit button
+    document.getElementById('otp').disabled = true; // Disable the OTP input
+    document.getElementById('countdown-timer').style.display = 'none'; // Hide the countdown timer
+    document.getElementById('otp-expired-message').style.display = 'block'; // Show the expired message
+    document.getElementById('otp-resend-button').style.display = 'block'; // Show the "Resend OTP" button
+  }
+}, 1000); // Update every 1 second
+
+document.getElementById('otp-form').addEventListener('submit', function (event) {
+  const otpField = document.getElementById('otp');
+  const otpValue = otpField.value;
+
+  if (otpValue.trim() === '' || isNaN(otpValue) || parseInt(otpValue) < 0) {
+    alert('Please enter a valid OTP.');
+    event.preventDefault(); // Prevent the form from submitting
+  }
+});
+
+</script>
+{% endblock script %}

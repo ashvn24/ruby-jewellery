@@ -1,0 +1,142 @@
+{% extends 'adminbase.html'%}
+
+{% block content %}
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <p> <h4 class="card-title">All Coupons</h4>
+        <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    ADD
+  </button></p>
+  {% for message in messages %}
+  <div>
+    <p style="color:red;">{{message}}</p>
+  </div>
+  {% endfor %}
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add coupon</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+                <form action="{% url 'add_coupon'%}" method="post" id="couponform">
+                  {% csrf_token %}
+                  <fieldset>
+                      <div class="mb-3">
+                          <label class="form-label">Code</label>
+                          <input type="text" name="coupon-code" id="code" class="form-control" placeholder="enter CODE">
+                      </div>
+                      <div class="mb-3">
+                          <label class="form-label">Discount in %</label>
+                          <input type="text" name="discount" id="discount" class="form-control" placeholder="enter Discount">
+                      </div>
+                      <div class="mb-3">
+                          <label class="form-label">Start Date</label>
+                          <input type="date" name="start" id="start" class="form-control" placeholder="Date">
+                      </div>
+                      <div class="mb-3">
+                          <label class="form-label">End Date</label>
+                          <input type="date" name="end" id="end" class="form-control" placeholder="Date">
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" id="submit-button" class="submit btn btn-primary">Add</button>
+                      </div>
+                  </fieldset>
+                </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+        <table class="table table-bordered">
+          <thead>
+            <tr >
+              <th> id </th>
+              <th> CODE </th>
+              <th> Discount </th>
+              <th> Start </th>
+              <th> Expire </th>
+              <th> Status </th>
+              
+            </thead>
+            <tbody>
+                {% for i in coupons %}
+                <tr>
+                    <td>
+                        {{i.id}}
+                    </td>
+                    <td>
+                        {{i.code}}
+                    </td>
+                    <td>
+                        {{i.discount}}%
+                    </td>
+                    <td>
+                        {{i.start_date}}
+                    </td>
+                    <td>
+                        {{i.end_date}}
+                    </td>
+                    <td>
+                        
+                        <form action="{% url 'couponactivate' id=i.id %}" method='post'>
+                            {% csrf_token %}
+
+                            <select class="form-select form-select-xs mb-3 " style="width: max-content;"
+                                name="action" onchange="this.form.submit()">
+                                <option {% if not i.is_active %} selected {% endif %} value='nonactive'>
+                                    Inactive</option>
+                                <option{% if i.is_active %} selected {% endif %} value='active'>Active
+                                    </option>
+
+                            </select>
+
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div> 
+                        
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+  document.getElementById("couponform").addEventListener("submit", function (event) {
+      // Get the values of the form fields
+      var code = document.getElementById("code").value;
+      var discount = document.getElementById("discount").value;
+      var start = document.getElementById("start").value;
+      var end = document.getElementById("end").value;
+
+      const nonEmptyNumeric = /^[0-9]+$/;
+
+      // Check if any field is empty
+      if (code.trim() === "" || discount.trim() === "" || start.trim() === "" || end.trim() === "") {
+          alert("Please fill in all fields.");
+          event.preventDefault(); // Prevent form submission
+          return;
+      }
+
+      // Check if "Discount" is a numeric value
+      if (discount.trim() !== '' && !discount.match(nonEmptyNumeric)) {
+        alert('Price should be a non-empty numeric value.');
+        event.preventDefault(); // Prevent form submission
+        return;
+    }
+  });
+</script>
+{% endblock script %}

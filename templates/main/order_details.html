@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for i in orders %}
+
+        
+        <div class="left-side">
+            {% for j in i.orderitem_set.all %}
+            <img src="{{j.image}}" alt="Product Image" class="product-image" style="max-width: 100px; max-height: 100px;">
+            <h2>{{j.product.product_name}}</h2>
+            <p>Price: {{j.product.price}}</p>
+            <p>Quantity: {{j.quantity}}</p>
+            <p>Order Date:{{i.date}}</p>
+            <p>Expected Delivery: DD/MM/YYYY</p>
+            {% if i.status == 'delivered' or i.status == 'completed' or i.status == 'refunded' %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#feedbackModal">
+                Feedback
+              </button>
+            {% endif %}
+            <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Enter Your Feedback</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <form action="{% url 'order_details' i.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                          <div class="form-group">
+                            <input type= "text" name="product" value="{{j.product.id}}" hidden>
+                            <label for="feedback">Feedback</label>
+                            <textarea class="form-control" name="review" id="feedback" rows="4" placeholder="Enter your feedback"></textarea>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                        </div>
+                      </form>                      
+                  </div>
+                </div>
+              </div>
+            <hr>
+            {% endfor %}
+            
+            <div>
+                {% if i.status == 'cancelled' %}
+                <label style="color:red">Order cancelled</label>
+                {% elif i.status == 'refunded' %}
+                <label style="color:red">Refunded</label>
+                {% elif i.status == 'delivered' or i.status == 'completed' %}
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#returnConfirmationModal">Return</button>
+                <div class="modal fade" id="returnConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="returnConfirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="returnConfirmationModalLabel">Confirm Action</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to return?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'cancel' i.id %}" class="btn btn-danger">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#confirmationModal">Cancel</button>
+                <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to cancel?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'cancel' i.id %}" class="btn btn-danger">Confirm</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+            </div>
+            <br>
+            {% if i.status == 'delivered' or i.status == 'completed' %}
+                <a href="{% url 'invoice' i.id %}" class="btn btn-secondary btn-lg">Invoice</a>
+            {% endif %}
+            
+            <br>
+            
+            
+        </div>
+        <div class="right-side">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <p>Subtotal:<strong> {{total_price}}</strong></p>
+                <p>Shipping:<strong> + 150</strong></p>
+                {% if i.coupon %}
+                <p>Discount: <strong> - {{ i.coupon }}</strong></p>
+                {% else %}
+                <p>No discount available</p>
+                {% endif %}                
+                <p>Total Amount: <strong>{{i.amount}}</strong></p>
+                <p>Payment Method: <strong>{{i.payment_type}}</p>
+                <p style="color:blue;">Status: {{i.status}}</strong></p>
+            </div>
+            <div class="delivery-address">
+                <h3>Delivery Address</h3>
+                <p>Name: {{i.address.first_name}}</p>
+                <p>Address: {{i.address.addressline1}}</p>
+                <p>City: {{i.address.city}}</p>
+                <p>ZIP Code:{{i.address.pin}}</p>
+            </div>
+        </div>
+
+        
+          
+          
+        
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

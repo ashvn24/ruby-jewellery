@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="meta description">
+
+    <title>Ruby - Jewelry Store </title>
+
+    <!--=== Favicon ===-->
+    <link rel="shortcut icon" href="{% static 'assets/img/favicon.ico'%}" type="image/x-icon"/>
+
+    <!--== Google Fonts ==-->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Droid+Serif:400,400i,700,700i"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Montserrat:400,700"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i"/>
+
+    <!--=== Bootstrap CSS ===-->
+    <link href="{% static 'assets/css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <!--=== Font-Awesome CSS ===-->
+    <link href="{% static 'assets/css/vendor/font-awesome.css' %}" rel="stylesheet">
+    <!--=== Plugins CSS ===-->
+    <link href="{% static 'assets/css/plugins.css' %}" rel="stylesheet">
+    <!--=== Main Style CSS ===-->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+    <!-- Modernizer JS -->
+    <script src="{% static 'assets/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+   
+</head>
+ <style>
+        /* Custom CSS styles for the alert modal */
+    .modal-dialog-top-right {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        margin: 0;
+        width: 300px; /* Adjust the width as needed */
+        z-index: 1050;
+    }
+
+    /* Optional rounded edges */
+    .rounded {
+        border-radius: 10px; /* Adjust the radius as needed */
+    }
+
+    /* Custom CSS for the modal body content (centered text) */
+    .modal-body {
+        text-align: center;
+    }
+
+    /* Custom CSS to auto-hide the modal */
+    .modal.fade.show {
+        transition: opacity 2s;
+    }
+    .text-success {
+        color: green;
+    }
+    {% block style %}{% endblock style %}
+
+    </style>
+<body>
+<!--== Header Area Start ==-->
+{% include 'includes/header.html' %}
+<!--== Header Area End ==-->
+{% comment %} {% include 'includes/bread.html' %} {% endcomment %}
+
+{% block content %}
+
+{% endblock %}
+
+{% include 'includes/footer.html' %}
+
+
+<!--=======================Javascript============================-->
+<!--=== Jquery Min Js ===-->
+<script src="{% static 'assets/js/vendor/jquery-3.3.1.min.js' %}"></script>
+<!--=== Jquery Migrate Min Js ===-->
+<script src="{% static 'assets/js/vendor/jquery-migrate-1.4.1.min.js' %}"></script>
+<!--=== Popper Min Js ===-->
+<script src="{% static 'assets/js/vendor/popper.min.js' %}"></script>
+<!--=== Bootstrap Min Js ===-->
+<script src="{% static 'assets/js/vendor/bootstrap.min.js' %}"></script>
+<!--=== Plugins Min Js ===-->
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+
+
+{% block script %}
+
+{% endblock %}
+<!-- Start of ChatBot (www.chatbot.com) code -->
+<script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "652f568ca1c2ab000791b367";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+<noscript>You need to <a href="https://www.chatbot.com/help/chat-widget/enable-javascript-in-your-browser/" rel="noopener nofollow">enable JavaScript</a> in order to use the AI chatbot tool powered by <a href="https://www.chatbot.com/" rel="noopener nofollow" target="_blank">ChatBot</a></noscript>
+<!-- End of ChatBot code -->
+<!--=== Active Js ===-->
+<script src="{% static 'assets/js/active.js' %}"></script>
+<script>
+      const myModal = document.getElementById('myModal')
+const myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})
+</script>
+<script>
+    
+    
+      $(document).on('click', ".addToCartBtn", function(){
+      
+          var _vm = $(this).closest('.product-details');
+          
+        
+          var _productId = $(this).data('product-id'); // Get product ID from data attribute
+      
+          console.log( _productId);
+      
+         //ajax
+         $.ajax({
+          url: '/cart/add/',
+          data: {
+              'id': _productId,
+             
+          },
+          dataType: 'json',
+          beforeSend: function(){
+              _vm.attr('disabled', true);
+          },
+          success: function(response) {
+              
+            
+              $('#cart-count').text(response.totallist);
+             
+          },
+          error: function(error) {
+              console.log('Error:', error);
+              $('#customAlertMessage2').text('Product added to Cart!');
+                $('#customAlertModal2').modal('show');
+
+                // Automatically close the alert after 1.5 seconds
+                setTimeout(function () {
+                    $('#customAlertModal2').modal('hide');
+                }, 1500); // 1.5 seconds
+          }
+         });
+      });
+      
+  
+</script> 
+
+{% comment %} ----------------------------------------Wishlist-------------------------------------- {% endcomment %}
+
+
+<script>
+    $(document).on('click', ".btn-whislist", function () {
+        var _vm = $(this).closest('.product_wish');
+        var _productId = $(this).data('product-id');
+        var _button = $(this);
+
+        // Check if the product is already in the wishlist
+        if (_button.text() === "Added to Wishlist") {
+            // Display an "Already Added" alert
+            $('#customAlertMessage').text('Product is already added to the wishlist!');
+            $('#customAlertModal').modal('show');
+
+            // Automatically close the alert after 1.5 seconds
+            setTimeout(function () {
+                $('#customAlertModal').modal('hide');
+            }, 1500); // 1.5 seconds
+            return;
+        }
+
+        // Add the product to the wishlist via AJAX
+        $.ajax({
+            url: '/addwish/',
+            data: {
+                'id': _productId,
+            },
+            dataType: 'json',
+            beforeSend: function () {
+                _vm.attr('disabled', true);
+            },
+            success: function (response) {
+                $('#cart-count').text(response.totallist);
+                
+                // Change the button text to "Added to Wishlist"
+               
+            },
+            error: function (error) {
+                console.log('Error:', error);
+                _button.text("Added to Wishlist");
+
+                // Display a custom alert for successful addition
+                $('#customAlertMessage').text('Product added to wishlist!');
+                $('#customAlertModal').modal('show');
+
+                // Automatically close the alert after 1.5 seconds
+                setTimeout(function () {
+                    $('#customAlertModal').modal('hide');
+                }, 1500); // 1.5 seconds
+            }
+        });
+    });
+</script>
+
+
+
+</body>
+
+</html>

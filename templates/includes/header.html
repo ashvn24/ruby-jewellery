@@ -1,0 +1,130 @@
+{% load static %}
+{% load cart_tag %}
+<header id="header-area" class="header__3">
+    <div class="ruby-container">
+        <div class="row">
+            <!-- Logo Area Start -->
+            <div class="col-3 col-lg-1 col-xl-2 m-auto">
+                <a href="{% url 'index' %}" class="logo-area">
+                    <img src="{% static 'assets/img/logo-black.png' %}" alt="Logo" class="img-fluid"/>
+                </a>
+            </div>
+            <!-- Logo Area End -->
+
+            <!-- Navigation Area Start -->
+            <div class="col-3 col-lg-9 col-xl-8 m-auto">
+                <div class="main-menu-wrap">
+                    <nav id="mainmenu">
+                        <ul>
+                            <li class=""><a href="{%url 'index' %}">Home</a>
+                                
+                            </li>
+                            <li class=""><a href="{% url 'shop'%}">Shop</a>
+                                
+                            </li>
+                            {% for i in maincategory %}
+                            <li class="dropdown-show"><a href="http://127.0.0.1:8000/shop/?gender=1">{{i.name}}</a>
+                                <ul class="mega-menu-wrap dropdown-nav">
+                                    {% for cat in i.category_set.all %}
+                                    <li class="mega-menu-item"><a href="shop-left-full-wide.html"
+                                                                  class="mega-item-title">{{cat.name}}</a>
+                                        <ul>
+                                            {% for sub in cat.sub_category_set.all %}
+                                            <li><a href="shop.html">{{sub.name}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endfor %}
+                                    
+                                    
+                                </ul>
+                            </li>
+                            {% endfor %}
+                            
+                                {% comment %} <ul class="dropdown-nav">
+                                    <li><a href="blog.html">Blog Right Sidebar</a></li>
+                                    <li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
+                                    <li><a href="blog-grid.html">Blog Grid Layout</a></li>
+                                    <li><a href="single-blog.html">Blog Details</a></li>
+                                </ul> {% endcomment %}
+                            </li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                            
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- Navigation Area End -->
+
+            <!-- Header Right Meta Start -->
+            <div class="col-6 col-lg-2 m-auto">
+                <div class="header-right-meta text-right">
+                    <ul>
+                        <li><form class="d-flex" role="search" action = "{% url 'shop' %}" method = 'get'>
+                            {% csrf_token %}
+                            <input class="form-control me-2" name = "product" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit"><i class="fa fa-search"></i></button>
+                          </form></li> 
+                        
+                        
+                        <li class="settings"><a href="#"><i class="fa fa-cog"></i></a>
+                            <div class="site-settings d-block d-sm-flex">
+                                
+
+                                <dl class="my-account">
+                                    <dt>My Account</dt>
+                                    {% if user.is_staff %}
+                                    <dd><a href="{% url 'admin' %}">Admin</a></dd>
+                                    {% endif %}
+                                    <dd><a href="{% url 'profile' %}">Profile</a></dd>
+                                    <dd><a href="{% url 'wishlist' %}">Wishlist</a></dd>
+                                    {% if user.is_authenticated %}
+                                    <dd><a href="{%url 'logout' %}">
+                                        Logout
+                                    </a></dd>
+                                    {% else %}
+                                    <dd><a href="{%url 'login' %}">
+                                        Login
+                                    </a></dd>
+                                    {% endif %}
+                                </dl>
+
+                                
+                            </div>
+                        </li>
+                        <li class="shop-cart"><a href="{% url 'cart_detail'%}"><i class="fa fa-shopping-bag"></i> <span id="cart-count"> </span></a>
+                            <div class="mini-cart">
+                                <div class="mini-cart-body">
+                                    {% for key,value in request.session.cart.items %}
+                                    <div class="single-cart-item d-flex">
+                                        <figure class="product-thumb">
+                                            <a href="#"><img class="img-fluid" src="{{value.product_image}}"
+                                                             alt="Products"/></a>
+                                        </figure>
+
+                                        <div class="product-details">
+                                            <h2><a href="#">{{value.product_name}}</a></h2>
+                                            <div class="cal d-flex align-items-center">
+                                                <span class="quantity">{{value.quantity}}</span>
+                                                <span class="multiplication">X</span>
+                                                <span class="price">{{value.price}}</span>
+                                            </div>
+                                        </div>
+                                        <a href="{% url 'item_clear' key %}" class="remove-icon"><i class="fa fa-trash-o"></i></a>
+                                    </div>
+                                    {% endfor %}
+                                    
+                                </div>
+                                <div class="mini-cart-footer">
+                                    <a href="{% url 'checkout' %}" class="btn-add-to-cart">Checkout</a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Header Right Meta End -->
+        </div>
+    </div>
+</header>
+

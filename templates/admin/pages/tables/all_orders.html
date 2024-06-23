@@ -1,0 +1,131 @@
+{% extends 'adminbase.html'%}
+{% block content %}
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <p> <h4 class="card-title">All Orders</h4>
+        <table class="table table-bordered">
+            <thead>
+            <tr >
+                <th> id </th>
+                <th> Product </th>
+                <th> Date </th>
+                <th> Address </th>
+                <th> Status </th>
+                <th> Details </th>
+                <th> Manage </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in orders %}
+            <tr>
+                <td>
+                {{i.id}}
+                </td>
+                            <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">{{i.product.product_name}}</td>
+                            <td>{{i.date}}</td>
+                            <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">{{ i.address.addressline1 }}</td>
+
+                            <td>{{i.status}}</td>
+                            <td><a href="{% url 'view_order' i.id %}" class="btn-add-to-cart">View</a></td>
+                            
+
+                            {% if i.status == 'cancelled' %}
+                            <td>
+                                <p style=" color: red; font-weight: bold; margin-left:40px;margin-top:20px">Cancelled</p>
+                            </td>
+                            {% elif i.status == 'refunded' %}
+                            <td>
+                                <p style=" color: red; font-weight: bold;margin-left:40px;margin-top:20px">Returned</p>
+                            </td>
+                            {% else %}
+                            
+                            <td>
+                            
+                            <!-- Button trigger modal -->
+                            <form action="{% url 'update_order' i.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i.id}}">
+                                    Change
+                                </button>
+                                
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="staticBackdrop{{i.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    
+                                    <div class="modal-dialog ">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Change Status</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="dropdown">
+                                                
+                                                    <select name="status" id="status" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <option class="dropdown-item" value="pending">Pending</option>
+                                                        <option class="dropdown-item" value="processing">Processing</option>
+                                                        <option class="dropdown-item" value="shipped">Shipped</option>
+                                                        <option class="dropdown-item" value="delivered">Delivered</option>
+                                                        <option class="dropdown-item" value="completed">Completed</option>
+                                                        <option class="dropdown-item" value="cancelled">Cancelled</option>
+                                                        <option class="dropdown-item" value="refunded">Refunded</option>
+                                                        <option class="dropdown-item" value="on_hold">On Hold</option>
+                                                    </select>
+                                                
+                                              </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Apply</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                </div>
+                            </form> 
+                            </td>
+                            {% endif %}
+                        </tr>
+                        
+                        {% endfor %}
+            </tbody>
+        </table>
+        <!-- Add this section below your table -->
+<div class="d-flex justify-content-end">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if orders.has_previous %}
+                
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ orders.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for i in orders.paginator.page_range %}
+                <li class="page-item {% if i == orders.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            {% if orders.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ orders.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+    </div>
+    
+</div>
+</div> 
+
+
+  {% endblock %}

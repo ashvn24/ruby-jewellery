@@ -1,0 +1,212 @@
+
+{% extends 'adminbase.html'%}
+{% load static %}
+{% block card %}
+<style>
+  .report-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #166cc19e;
+    padding: 10px;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.label {
+    font-size: 24px;
+}
+
+.date-selectors {
+    display: flex;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.date-selector label {
+    font-size: 18px;
+    margin-right: 5px;
+}
+
+.date-selector input[type="date"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+}
+
+.download-button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+</style>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+{% endblock card %}
+
+{% block content %}
+<!-- partial -->
+
+      <div class="page-header">
+        <h3 class="page-title">
+          <span class="page-title-icon bg-gradient-primary text-white me-2">
+            <i class="mdi mdi-home"></i>
+          </span> Dashboard
+        </h3>
+        <nav aria-label="breadcrumb">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">
+              <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="row">
+        <div class="col-md-4 stretch-card grid-margin">
+          <div class="card bg-gradient-danger card-img-holder text-white">
+            <div class="card-body">
+              <img src="{% static 'assets1/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+              <h4 class="font-weight-normal mb-3">Total Users<i class="mdi mdi-chart-line mdi-24px float-right"></i>
+              </h4>
+              <h2 class="mb-5">{{total_user}}</h2>
+              <h6 class="card-text">Increased by 60%</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 stretch-card grid-margin">
+          <div class="card bg-gradient-info card-img-holder text-white">
+            <div class="card-body">
+              <img src="{% static 'assets1/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+              <h4 class="font-weight-normal mb-3">Total orders <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+              </h4>
+              <h2 class="mb-5">{{total_order}}</h2>
+              <h6 class="card-text">Decreased by 10%</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 stretch-card grid-margin">
+          <div class="card bg-gradient-success card-img-holder text-white">
+            <div class="card-body">
+              <img src="{% static 'assets1/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+              <h4 class="font-weight-normal mb-3">Total Revenue <i class="mdi mdi-diamond mdi-24px float-right"></i>
+              </h4>
+              <h2 class="mb-5">{{total_revenue}}</h2>
+              <h6 class="card-text">Increased by 5%</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <label for="month" class="col-form-label">Choose a month:</label>
+      <div class="col-md-2" style="margin-bottom:10px;">
+          <select id="month" class="form-control" name="month">
+            <option value="1"{% if month == '1' %}selected="selected"{% endif %}>January</option>
+            <option value="2" {% if month == '2' %}selected="selected"{% endif %}>February</option>
+            <option value="3" {% if month == '3' %}selected="selected"{% endif %}>March</option>
+            <option value="4" {% if month == '4' %}selected="selected"{% endif %}>April</option>
+            <option value="5" {% if month == '5' %}selected="selected"{% endif %}>May</option>
+            <option value="6" {% if month == '6' %}selected="selected"{% endif %}>June</option>
+            <option value="7" {% if month == '7' %}selected="selected"{% endif %}>July</option>
+            <option value="8" {% if month == '8' %}selected="selected"{% endif %}>August</option>
+            <option value="9" {% if month == '9' %}selected="selected"{% endif %}>September</option>
+            <option value="10" {% if month == '10' %}selected="selected"{% endif %}>October</option>
+            <option value="11" {% if month == '11' %}selected="selected"{% endif %}>November</option>
+            <option value="12" {% if month == '12' %}selected="selected"{% endif %}>December</option>
+          </select>
+        </div>
+      <div class="row">
+        <div id="chartContainer" style="height: 280px; width: 95%;margin-bottom:20px"></div>
+      
+      </div>
+      <br>
+      <div class="row">
+      <div class="report-bar" style="width:98%;">
+         <div class="label">Sale Report</div>
+          <form method="post" action="{% url 'sale_report' %}">
+            {% csrf_token %}
+            <div class="report-bar">
+                <div class="date-selectors">
+                    <div class="date-selector">
+                        <label for="fromDate">From:</label>
+                        <input type="date" id="fromDate" name="fromDate">
+                    </div>
+                    <div class="date-selector">
+                        <label for="toDate">To:</label>
+                        <input type="date" id="toDate" name="toDate">
+                    </div>
+                </div>
+                <button type="submit" class="download-button">Download</button>
+            </div>
+        </form>
+        
+      </div>
+      </div>
+      
+      
+    
+    <!-- partial -->
+  </div>
+  <!-- main-panel ends -->
+  {% endblock %}
+  {% block script %}
+  <script>
+    window.onload = function () {
+        // Assuming orders_by_week is passed from Django and contains your data
+        var orders_by_week = {{ orders_by_week|safe }};
+
+        var dataPoints = orders_by_week.map(function (value, index) {
+            return { y: value, label: "Week " + (index + 1) };
+        });
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2",
+            title: {
+                text: "Total Orders Per Week"
+            },
+            axisY: {
+                title: "Total Orders"
+            },
+            data: [{
+                type: "column",
+                showInLegend: false,
+                dataPoints: dataPoints
+            }]
+        });
+
+        chart.render();
+    }
+</script>
+
+
+<script>
+  $(document).ready(function () {
+      // Select the <select> element by its id
+      var selectElement = $("#month");
+
+      // Add a change event listener to the <select> element
+      selectElement.on("change", function () {
+          // Get the selected value
+          var selectedValue = selectElement.val();
+
+          // Construct the URL with the selected value
+          var url = "/user/adminn/?year=2023&month=" + selectedValue;
+
+          // Redirect to the constructed URL
+          window.location.href = url;
+      });
+  });
+</script>
+
+{% endblock script %}
+ 

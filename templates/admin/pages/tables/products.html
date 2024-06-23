@@ -1,0 +1,79 @@
+{% extends 'adminbase.html'%}
+{% load static %}
+
+{% block content %}
+<div class="col-lg-12 grid-margin stretch-card" style="margin-right:500px;">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">All Products</h4>
+        <p ><a href="{% url 'add_product'%}"><button type="button" class="btn btn-gradient-success btn-sm">Add</button></a></p>
+        
+        </p>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th> Id</th>
+              <th> Product name </th>
+              <th> Category </th>
+              <th> Price </th>
+              <th> More Details </th>
+              <th> Manage </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in prod %}
+            
+            <tr>
+              <td> {{i.id}} </td>
+              <td> {{i.product_name}} </td>
+              <td>
+                {{i.categories}}
+              </td>
+              <td>Rs.{{i.price}} </td>
+              <td><a href="/user/edit_products/{{i.id}}"><button type="button" class="btn btn-link btn-sm">View</button></a>
+              </td>
+              <td>
+                {% if i.is_deleted %}
+                <a href="{% url 'undo_delete_product' i.id %}"><button type="button" class="btn btn-gradient-success btn-sm">List</button></a>
+                {% else %}
+                <a href="{% url 'delete_product' i.id %}"><button type="button" class="btn btn-gradient-danger btn-sm">Un List</button></a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="d-flex justify-content-end">
+          <nav aria-label="Page navigation">
+              <ul class="pagination">
+                  {% if prod.has_previous %}
+                      
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ prod.previous_page_number }}" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </li>
+                  {% endif %}
+      
+                  {% for i in prod.paginator.page_range %}
+                      <li class="page-item {% if i == prod.number %}active{% endif %}">
+                          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                      </li>
+                  {% endfor %}
+      
+                  {% if prod.has_next %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ prod.next_page_number }}" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </li>
+                      
+                  {% endif %}
+              </ul>
+          </nav>
+      </div>
+      
+      </div>
+    </div>
+  </div>
+{% endblock %}

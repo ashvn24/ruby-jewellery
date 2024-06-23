@@ -1,0 +1,22 @@
+{% extends 'adminbase.html' %}
+{% block content %}
+
+<div class="col-md-8 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Edit Main Category</h4>
+        <form class="forms-sample"  method="POST">
+            {% csrf_token %}
+          <div class="form-group row">
+            <label for="exampleInputUsername2" class="col-sm-3 col-form-label"> Category </label>
+            <div class="col-sm-9">
+              <input name="name" type="text"  class="form-control" id="exampleInputUsername2" placeholder="Fullname">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

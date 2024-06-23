@@ -1,0 +1,68 @@
+{% extends "adminbase.html" %}
+{% block card %}
+
+<style>
+    .product-image {
+        max-width: 100%;
+        height: auto;
+    }
+    .left-side {
+        float: left;
+        width: 70%;
+        padding: 20px;
+    }
+    .right-side {
+        float: right;
+        width: 30%;
+        padding: 20px;
+    }
+</style>
+    {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for i in orders %}
+
+        
+        <div class="left-side">
+            {% for j in i.orderitem_set.all %}
+            <img src="{{j.image}}" alt="Product Image" class="product-image" style="max-width: 100px; max-height: 100px;">
+            <h2>{{j.product.product_name}}</h2>
+            <p>Price: {{j.product.price}}</p>
+            <p>Quantity: {{j.quantity}}</p>
+            <p>Order Date:{{i.date}}</p>
+            <p>Expected Delivery: DD/MM/YYYY</p>
+            <hr>
+            {% endfor %}
+            
+            <br>
+            
+            
+        </div>
+        <div class="right-side">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <p>Subtotal:<strong> {{total_price}}</strong></p>
+                <p>Shipping:<strong>+ 150</strong></p>
+                <p>Discount:<strong> - {{i.coupon}}</strong></p>
+                <p>Total Amount: <strong>{{i.amount}}</strong></p>
+                <p>Payment Method: <strong>{{i.payment_type}}</p>
+                <p style="color:blue;">Status: {{i.status}}</strong></p>
+            </div>
+            <div class="delivery-address">
+                <h3>Delivery Address</h3>
+                <p>Name: {{i.address.first_name}} {{i.address.last_name}}</p>
+                <p>Address: {{i.address.addressline1}}</p>
+                <p>City: {{i.address.city}}</p>
+                <p>ZIP Code:{{i.address.pin}}</p>
+            </div>
+        </div>
+        
+        
+        {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
+    </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,125 @@
+{% extends 'adminbase.html'%}
+{% load static %}
+
+{% block content %}
+<div class="row">
+<div class="col-lg-12 grid-margin stretch-card">
+  
+  <div class="card">
+    <div class="card-body">
+      <p><h4 class="card-title">Main Categories</h4>
+        <a href="{% url 'add_main_category'%}"><button type="button" class="btn btn-gradient-dark btn-md ">Add</button></p></a>
+        <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th> Id</th>
+            <th> Main Categories </th>
+            <th> Manage </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in maincategory %}
+          <tr>
+            <td> {{i.id}} </td>
+            <td> {{i.name}} </td>
+            <td>
+              <a href="/user/edit_main_category/{{i.id}}"><button type="button" class="btn btn-gradient-success btn-sm">Edit</button></a>
+              <a href="/user/delete_main_category/{{i.id}}"><button type="button" class="btn btn-gradient-danger btn-sm">Delete</button></a>
+            </td>
+            
+          </tr>
+          {% endfor%}
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+</div>
+
+
+
+<div class="col-lg-12 grid-margin stretch-card">
+  
+  <div class="card">
+    <div class="card-body">
+      <p><h4 class="card-title">Category</h4>
+        <a href="{% url 'add_category' %}"><button type="button" class="btn btn-gradient-dark btn-md ">Add</button></p></a>
+      
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th> Id</th>
+            <th>Category </th>
+            <th>Main Category </th>
+            <th> Manage </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in maincategory %}
+          {% for cat in i.category_set.all %}
+          <tr>
+            <td> {{cat.id}} </td>
+            <td> {{cat.name}} </td>
+            <td>{{cat.maincat}}</td>
+            <td>
+              <a href="/user/edit_category/{{cat.id}}"><button type="button" class="btn btn-gradient-success btn-sm">Edit</button></a>
+              <a href="/user/delete_category/{{cat.id}}"><button type="button" class="btn btn-gradient-danger btn-sm">Delete</button></a>
+            </td>
+            
+          </tr>
+          {% endfor%}
+          {% endfor%}
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+  
+  <div class="card">
+    <div class="card-body">
+      <p><h4 class="card-title">Sub Categories</h4>
+      <a href="{% url 'add_subcategory' %}"><button type="button" class="btn btn-gradient-dark btn-md ">Add</button></p></a>
+      
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th> Id</th>
+            <th> Sub Category </th>
+            <th> Category </th>
+            <th> Main Category </th>
+            <th> Manage </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in maincategory %}
+          {% for cat in i.category_set.all %}
+          {% for sub in cat.sub_category_set.all %}
+          <tr>
+            <td> {{sub.id}} </td>
+            <td> {{sub.name}} </td>
+            <td>{{cat.name}}</td>
+            <td>{{cat.maincat}}</td>
+            <td>
+              <a href="/user/edit_subcategory/{{sub.id}}"><button type="button" class="btn btn-gradient-success btn-sm">Edit</button></a>
+              <a href="/user/delete_subcategory/{{sub.id}}"><button type="button" class="btn btn-gradient-danger btn-sm">Delete</button></a>
+            </td>
+            
+          </tr>
+          {% endfor%}
+          {% endfor%}
+          {% endfor%}
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+</div>
+</div>
+
+{% endblock %}

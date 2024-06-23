@@ -1,0 +1,639 @@
+{% extends "base1.html" %}
+{% load cart_tag %}
+{% load static %}
+{% block style %}
+.modal-header {
+    background-color: #9b1d1de0; /* Change to your preferred header color */
+    color: #fff;
+    border-radius: 14px 14px 0 0;
+}
+
+/* Style the modal title */
+.modal-title {
+    font-size: 24px;
+}
+
+/* Style the close button in the modal header */
+.modal-header .close {
+    color: #fff;
+}
+
+/* Style the modal content */
+.modal-content {
+    border-radius: 15px; /* Add border radius to the modal content */
+}
+
+/* Style the modal body (form) */
+.modal-body {
+    padding: 20px;
+}
+
+/* Style the form input fields */
+.modal-body input,
+.modal-body select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Center the "Add Address" button horizontally and add border radius */
+.modal-body .btn-login {
+    background-color: #007BFF; /* Change to your preferred button color */
+    color: #fff;
+    border: none;
+    width: 100%; /* Make the button full width */
+    border-radius: 5px; /* Add border radius to the button */
+}
+
+/* Style the Add Address button on hover */
+.modal-body .btn-login:hover {
+    background-color: #0056b3; /* Change to a darker shade for hover effect */
+}
+
+/* Adjust the modal size if needed */
+.modal-dialog {
+    border-radius: 15px;
+    max-width: 600px; /* Adjust to your preferred width */
+}
+
+/* Center the modal vertically */
+.modal.vertical-center {
+    display: flex;
+    align-items: center;
+}
+{% endblock style %}
+{% block content %}
+
+
+<div id="page-content-wrapper" class="p-9">
+   
+    <div class="container">
+        <!--== Checkout Page Content Area ==-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Checkout Login Coupon Accordion Start -->
+                <div class="checkoutaccordion" id="checkOutAccordion">
+                    
+                    {% if valid %}
+                    <div class="alert alert-success alert-dismissible fade show" style="width: 20%;" role="alert">
+                        <strong>{{Coupon.code}}</strong> {{valid}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                {% elif invalid %}
+                    <div class="alert alert-warning alert-dismissible fade show" style="width: 20%;" role="alert">
+                        {{invalid}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                {% endif %}
+                    <div class="card">
+
+                        <h3>Have A Coupon? <span data-toggle="collapse" data-target="#couponaccordion">Click Here To Enter Your Code</span>
+                        </h3>
+                        <div id="couponaccordion" class="collapse" data-parent="#checkOutAccordion">
+                            <div class="card-body">
+                                <div class="cart-update-option">
+                                    <div class="apply-coupon-wrapper">
+                                        <form action="{% url 'checkout'%}" method="POST" class=" d-block d-md-flex">
+                                            {% csrf_token %}
+                                            <input type="text" name="coupon" placeholder="Enter Your Coupon Code"/>
+                                            <button class="submit btn-add-to-cart">Apply Coupon</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <!-- Checkout Login Coupon Accordion End -->
+            </div>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}style="color:red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form action="{% url 'place_order' %}" method="post">
+            {% csrf_token %}
+        <div>
+            <label for="country_2" class="required">Select Address:</label>
+            <select id="addressDropdown" name="address">
+                <option selected>Choose</option>
+                {% for ad in addrs %}
+                    <option value="{{ad.id}}">{{ad.first_name}} {{ad.addressline1}}</option>
+                {% endfor %}
+            </select>
+            
+            
+        </div>
+
+
+        <div class="row">
+            <!-- Checkout Billing Details -->
+            <div class="col-lg-6">
+                <div class="checkout-billing-details-wrap">
+                    <h2>Billing Details</h2>
+                    <div class="billing-form-wrap">
+                        <form action="{% url 'add_addrs' %}" method="post">
+                            {% csrf_token %}
+                    
+                            <div class="checkout-box-wrap">
+                                <div class="single-input-item">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="ship_to_different" data-toggle="modal" data-target="#addressModal">
+                                        <label class="custom-control-label" for="ship_to_different">Ship to a different address?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Bootstrap Modal for the form -->
+                    <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="addressModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addressModalLabel">Add Address</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="address-form" action="{% url 'add_addrs' %}" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="single-input-item">
+                                                    <label for="adfirst_name" class="required">Full Name</label>
+                                                    <input type="text" id="adfirst_name" name="adfirst_name" placeholder="Full Name"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="single-input-item">
+                                                    <label for="ademail" class="required">Email Address</label>
+                                                    <input type="email" id="ademail" name="ademail" placeholder="Email Address"  />
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="col-lg-6">
+                                                <div class="single-input-item">
+                                                    <label for="adph_no" class="required">Phone No.</label>
+                                                    <input type="text" id="adph_no" name="adph_no" placeholder="Phone Number"  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="single-input-item">
+                                            <label for="adaddressline1" class="required">Address</label>
+                                            <textarea id="adaddressline1" name="adaddressline1" placeholder="Address" ></textarea>
+                                        </div>
+                                    
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adcountry" class="required">Country</label>
+                                                    <input type="text" id="adcountry" name="adcountry" placeholder="Country" required />
+                                                </div>
+                                            </div>
+                                    
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adstate" class="required">State</label>
+                                                    <input type="text" id="adstate" name="adstate" placeholder="State" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for "adcity" class="required">City</label>
+                                                    <input type="text" id="adcity" name="adcity" placeholder="City" required />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="single-input-item">
+                                                    <label for="adpin" class="required">Pin</label>
+                                                    <input type="text" id="adpin" name="adpin" placeholder="Pin"  />
+                                                </div>
+                                                <input type="text" value="checkout" name="check" hidden>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="single-input-item">
+                                            <button class="btn-login btn-add-to-cart" id="submit-button">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Order Summary Details -->
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="order-summary-details">
+                    <h2>Your Order Summary</h2>
+                    <div class="order-summary-content">
+                        <!-- Order Summary Table -->
+                        <div class="order-summary-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                {% for key,value in cart.items %}
+                                <tbody>
+                                   
+                                    <tr>
+                                        <td><a href="single-product.html">{{value.product_name | truncatechars:25}}</a>
+                                        <input type="text" hidden name="adProduct" value="{{value.product_name}}"></td>
+                                        <td>{{value.quantity}}</td>
+                                        <td>{{value.price}}</td>
+                                        <td>{{value.price|multiply:value.quantity }}</td>
+                                    </tr>
+                                    {% if forloop.last %}
+                                        <!-- Create a hidden input with an ID and set its value to the last value -->
+                                        <input type="hidden" id="lastValue" name="lastValue" value="{{ forloop.counter }}">
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">Subtotal</td>
+                                        <td id="total"><strong>{{cart_total_amount}}</strong></td>
+                                    </tr>
+                                    {% if cart_total_amount < 500 %}
+                                    <tr>
+                                        <td colspan="3">Shipping</td>
+                                        <td>
+                                            <div>
+                                                <label>Free</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">Total Amount</td>
+                                        <td><strong>{{cart_total_amount}}</strong></td>
+                                    </tr>
+                                    {% elif valid %}
+                                    <tr>
+                                        <td colspan="3">Shipping</td>
+                                        <td id="shipping-cost">
+                                            <div>
+                                                <label>150</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">Discount</td>
+                                        <td id="coupon-discount">
+                                            <div>
+                                                <input type='text' name="dis" hidden value={{Coupon.discount}}>
+                                                {{discount_price}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">Total Amount</td>
+                                        <td class="total-amount" id="total-amount"><strong></strong></td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="3">Shipping</td>
+                                        <td>
+                                            <div>
+                                                <label>150</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="3">Total Amount</td>
+                                        <td name="totalamt"><strong>{{cart_total_amount|add:150}}</strong></td>
+                                    </tr>
+                                    {% endif %}
+                                </tfoot>
+                                
+                            </table>
+                        </div>
+
+                        <!-- Order Payment Method -->
+                        <div class="order-payment-method">
+                            <div class="single-payment-method show">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="cashon" name="paymentmethod" value="cash"
+                                               class="custom-control-input" checked/>
+                                        <label class="custom-control-label" for="cashon">Cash On Delivery</label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="cash">
+                                    <p>Pay with cash upon delivery.</p>
+                                </div>
+                            </div>
+
+                            <div class="single-payment-method">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="directbank" name="paymentmethod" value="bank"
+                                               class="custom-control-input"/>
+                                        <label class="custom-control-label" for="directbank">Direct Bank
+                                            Transfer</label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="bank">
+                                    <p>Make your payment directly into our bank account. Please use your Order ID as the
+                                        payment reference. Your order will not be shipped until the funds have cleared
+                                        in our account..</p>
+                                </div>
+                            </div>
+
+                            <div class="single-payment-method">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="checkpayment" name="paymentmethod" value="check"
+                                               class="custom-control-input"/>
+                                        <label class="custom-control-label" for="checkpayment">Pay with Check</label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="check">
+                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State /
+                                        County, Store Postcode.</p>
+                                </div>
+                            </div>
+
+                            <div class="single-payment-method">
+                                <div class="payment-method-name">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="paypalpayment" name="paymentmethod" value="razorpay"
+                                               class="custom-control-input"/>
+                                               <input type="text" value="{{order_id}}" name="order_id" hidden>
+                                               <input type="text" value="{{payment}}" name="payment" hidden>
+                                        <label class="custom-control-label" for="paypalpayment">Razorpay <img
+                                                src="{% static 'assets/img/paypal-card.jpg' %}" class="img-fluid paypal-card"
+                                                alt="Paypal"/></label>
+                                    </div>
+                                </div>
+                                <div class="payment-method-details" data-method="paypal">
+                                    <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
+                                        account.</p>
+                                </div>
+                            </div>
+
+                            <div class="summary-footer-area">
+                                {% comment %} <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="terms" required/>
+                                    <label class="custom-control-label" for="terms">I have read and agree to the website
+                                        <a
+                                                href="index.html">terms and conditions.</a></label>
+                                </div> {% endcomment %}
+
+                                
+                                <button id="placeOrderButton" type="submit" class="btn-add-to-cart">Place Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--== Checkout Page Content End ==-->
+    </form>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+    var couponDiscount; // Define couponDiscount in a global scope
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get references to the HTML elements
+            var shippingCostElement = document.getElementById("shipping-cost");
+            var couponDiscountElement = document.getElementById("coupon-discount");
+            var totalAmountElement = document.getElementById("total-amount");
+            var cartTotalAmountElement = document.getElementById("total");
+            // Parse values to numbers
+            var shippingCost = parseFloat(shippingCostElement.textContent);
+            couponDiscount = parseFloat(couponDiscountElement.textContent);
+            var cartTotalAmount=parseFloat(cartTotalAmountElement.textContent);
+            // Calculate the total amount
+            // Replace this with the actual cart total amount
+            var totalAmount = (cartTotalAmount + shippingCost)- couponDiscount;
+            
+
+            // Update the total amount in the HTML
+            totalAmountElement.textContent = totalAmount.toFixed(2); // Format as desired
+        });
+
+</script>
+
+{% comment %} ------------------------------------RAZORPAY------------------------------------------------------- {% endcomment %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+var options = {
+    "key": "rzp_test_fZ9GHf3LBOHj6X",
+    "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "RUBY",
+    "description": "Purchase transaction",
+    "image": "{% static 'assets/img/logo-black.png' %}",
+    "order_id": "{{order_id}}", // Embed the value properly using double curly braces
+    "handler": function (response) {
+        
+        var selectedAddress = document.getElementById("addressDropdown").value;
+        var totalQuantity = document.getElementById("lastValue").value;
+           
+            var totalAmount;
+
+                if ({{ cart_total_amount }} < 500) {
+                    totalAmount = {{ cart_total_amount }};
+                } else if ({{ cart_total_amount }} > 500) {
+                    if (couponDiscount) { // Check if couponDiscount has a value
+                        var discountAmount = {{ cart_total_amount }} + 150;
+                        totalAmount = ({{ cart_total_amount }} + 150)- couponDiscount;
+                    } else {
+                        totalAmount = {{ cart_total_amount }}+ 150; // No coupon discount, so no additional discount
+                    }
+                }
+        
+        // Send the payment details to your Django server using an AJAX request
+        $.ajax({
+            type: "POST",
+            url: "{% url 'razor' %}",
+            data: {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                tota_amount: totalAmount,
+                selected_address: selectedAddress,
+                totalQuantity: totalQuantity,
+                discountAmount, discountAmount,
+
+            },
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken") // Get the CSRF token from cookies
+            },
+            success: function (data) {
+                // Handle the success response if needed
+                console.log(data);
+                window.location.href = "{% url 'order_success' %}";
+            },
+            error: function () {
+                // Handle the error response if needed
+            }
+        });
+
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+
+var rzp1 = new Razorpay(options);
+
+rzp1.on('payment.failed', function (response) {
+    alert(response.error.code);
+    alert(response.error.reason);
+});
+var razorpayButton = document.getElementById('paypalpayment');
+var placeOrderButton = document.getElementById('placeOrderButton');
+ placeOrderButton.addEventListener('click', function(e) {
+    if (razorpayButton.checked) {
+        rzp1.open();
+        e.preventDefault();
+    } 
+}); 
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+<script>
+    $(document).ready(function () {
+        $('#address-form').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Collect the form data
+            var formData = $(this).serialize();
+
+            // Define the URL where you want to send the form data
+            var url = '{% url "add_addrs" %}';
+
+            // Send an AJAX POST request
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    // Handle the success response here if needed
+                    console.log('Form submitted successfully');
+                    
+                    // Reload the page after a successful submission
+                    location.reload();
+                },
+                error: function (error) {
+                    // Handle any errors here if needed
+                    console.error('Form submission error', error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+<script>
+    document.getElementById('address-form').addEventListener('submit', function (event) {
+        const name = document.getElementById('adfirst_name').value;
+        const email = document.getElementById('ademail').value;
+        const phone = document.getElementById('adph_no').value;
+        const address = document.getElementById('adaddressline1').value;
+        const country = document.getElementById('adcountry').value;
+        const state = document.getElementById('adstate').value;
+        const city = document.getElementById('adcity').value;
+        const pin = document.getElementById('adpin').value;
+
+        let isValid = true;
+
+        if (name.trim().length <= 3 || /\d/.test(name)) {
+            alert('Full Name should have more than 3 characters and should not contain numbers.');
+            isValid = false;
+        }
+
+        if (email.trim() === '' || !validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (phone.trim() === '' || !validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (address.trim().length <= 5) {
+            alert('Address should have more than 5 characters.');
+            isValid = false;
+        }
+
+
+        if (!validatePinCode(pin)) {
+            alert('Pin code should have 6 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        return /^[0-9]{10}$/.test(phone);
+    }
+
+    function validatePinCode(pin) {
+        // Check if it's a positive number with exactly 6 digits
+        return /^[0-9]{6}$/.test(pin);
+    }
+</script> 
+
+
+
+{% endblock %}

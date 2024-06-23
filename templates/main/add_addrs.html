@@ -1,0 +1,376 @@
+{% extends "base1.html" %}
+{% block content %}
+
+<div id="page-content-wrapper" class="p-9">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+<!-- My Account Page Start -->
+<div class="myaccount-page-wrapper">
+    <!-- My Account Tab Menu Start -->
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="myaccount-tab-menu nav" role="tablist">
+                <a href="#account-info"  data-toggle="tab"><i class="fa fa-user"></i> Account Details</a>
+
+                <a href="#orders" data-toggle="tab"><i class="fa fa-cart-arrow-down"></i> Orders</a>
+
+                <a href="#download" data-toggle="tab"><i class="fa fa-cloud-download"></i> Download</a>
+
+                <a href="#payment-method" data-toggle="tab"><i class="fa fa-credit-card"></i> Payment
+                    Method</a>
+
+                <a href="#address" class="active" data-toggle="tab"><i class="fa fa-map-marker"></i> address</a>
+
+                
+
+                <a href="{%url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+            </div>
+        </div>
+        <!-- My Account Tab Menu End -->
+
+        <!-- My Account Tab Content Start -->
+        <div class="col-lg-9 mt-5 mt-lg-0">
+            <div class="tab-content" id="myaccountContent">
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade " id="account-info" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Account Details</h3>
+                        
+                        <div class="account-details-form">
+                            <form id="profile-form" action="/profile_update/{{user.id}}" method="post">
+                                {% csrf_token %}
+                            
+                                <div class="single-input-item">
+                                    <label for="display-name" class="required">Full Name</label>
+                                    <input type="text" id="display-name" name="full_name" value="{{user.full_name}}" placeholder="Full Name" />
+                                </div>
+                            
+                                <div class="single-input-item">
+                                    <label for="email" class="required">Email Address</label>
+                                    <input type="email" id="email" name="email" value="{{user.email}}" placeholder="Email Address" required />
+                                </div>
+                            
+                                <div class="single-input-item">
+                                    <label for="phno" class="required">Phone No.</label>
+                                    <input type="text" id="phno" name="ph_no" value="{{user.ph_no}}" placeholder="Phone Number" required />
+                                </div>
+                            
+                            
+                                
+
+                                <fieldset>
+                                    <legend>Password change</legend>
+                                    <div class="single-input-item">
+                                        <label for="current-pwd" class="required">Current
+                                            Password</label>
+                                        <input type="password" id="current-pwd"
+                                               name="password" placeholder="Current Password"/>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="single-input-item">
+                                                <label for="new-pwd" class="required">New
+                                                    Password</label>
+                                                <input type="password" id="new-pwd" name="newpass"
+                                                       placeholder="New Password"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="single-input-item">
+                                                <label for="confirm-pwd" class="required">Confirm
+                                                    Password</label>
+                                                <input type="password" id="confirm-pwd" name="newpassconf"
+                                                       placeholder="Confirm Password"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="single-input-item">
+                                    <button class="btn-login btn-add-to-cart" id="submit-button">Update Profile</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="orders" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Orders</h3>
+
+                        <div class="myaccount-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for i in orders %}
+                                <tr>
+                                    <td>{{i.id}}</td>
+                                    <td>{{i.date}}</td>
+                                    <td>{{i.status}}</td>
+                                    <td>{{i.amount}}</td>
+                                    <td><a href="{% url 'order_details' i.id %}" class="btn-add-to-cart">View</a></td>
+                                </tr>
+                                    {% endfor %}
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="download" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Downloads</h3>
+
+                        <div class="myaccount-table table-responsive text-center">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Date</th>
+                                    <th>Expire</th>
+                                    <th>Download</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr>
+                                    <td>Haven - Free Real Estate PSD Template</td>
+                                    <td>Aug 22, 2018</td>
+                                    <td>Yes</td>
+                                    <td><a href="#" class="btn-add-to-cart">Download File</a></td>
+                                </tr>
+                                <tr>
+                                    <td>HasTech - Profolio Business Template</td>
+                                    <td>Sep 12, 2018</td>
+                                    <td>Never</td>
+                                    <td><a href="#" class="btn-add-to-cart">Download File</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade" id="payment-method" role="tabpanel">
+                    <div class="myaccount-content">
+                        <h3>Payment Method</h3>
+
+                        <p class="saved-message">You Can't Saved Your Payment Method yet.</p>
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+
+                <!-- Single Tab Content Start -->
+                <div class="tab-pane fade show active" id="address" role="tabpanel">
+                    <div class="account-details-form">
+                        <form id="address-form" action="{% url 'add_addrs' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="single-input-item">
+                                        <label for="adfirst_name" class="required">Full Name</label>
+                                        <input type="text" id="adfirst_name" name="adfirst_name" placeholder="Full Name"  />
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="single-input-item">
+                                        <label for="ademail" class="required">Email Address</label>
+                                        <input type="email" id="ademail" name="ademail" placeholder="Email Address"  />
+                                    </div>
+                                </div>
+                        
+                                <div class="col-lg-6">
+                                    <div class="single-input-item">
+                                        <label for="adph_no" class="required">Phone No.</label>
+                                        <input type="text" id="adph_no" name="adph_no" placeholder="Phone Number"  />
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="single-input-item">
+                                <label for="adaddressline1" class="required">Address</label>
+                                <textarea id="adaddressline1" name="adaddressline1" placeholder="Address" ></textarea>
+                            </div>
+                        
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="single-input-item">
+                                        <label for="adcountry" class="required">Country</label>
+                                        <input type="text" id="adcountry" name="adcountry" placeholder="Country"  />
+                                    </div>
+                                </div>
+                        
+                                <div class="col-lg-3">
+                                    <div class="single-input-item">
+                                        <label for="adstate" class="required">State</label>
+                                        <input type="text" id="adstate" name="adstate" placeholder="State"  />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="single-input-item">
+                                        <label for "adcity" class="required">City</label>
+                                        <input type="text" id="adcity" name="adcity" placeholder="City"  />
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="single-input-item">
+                                        <label for="adpin" class="required">Pin</label>
+                                        <input type="text" id="adpin" name="adpin" placeholder="Pin"  />
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="single-input-item">
+                                <button class="btn-login btn-add-to-cart" id="submit-button">Save Changes</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+                <!-- Single Tab Content End -->
+                
+                
+            </div>
+        </div>
+        <!-- My Account Tab Content End -->
+    </div>
+</div>
+<!-- My Account Page End -->
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    document.getElementById('address-form').addEventListener('submit', function (event) {
+        const name = document.getElementById('adfirst_name').value;
+        const email = document.getElementById('ademail').value;
+        const phone = document.getElementById('adph_no').value;
+        const address = document.getElementById('adaddressline1').value;
+        const country = document.getElementById('adcountry').value;
+        const state = document.getElementById('adstate').value;
+        const city = document.getElementById('adcity').value;
+        const pin = document.getElementById('adpin').value;
+
+        let isValid = true;
+
+        if (name.trim().length <= 3 || /\d/.test(name)) {
+            alert('Full Name should have more than 3 characters and should not contain numbers.');
+            isValid = false;
+        }
+
+        if (email.trim() === '' || !validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (phone.trim() === '' || !validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (address.trim() === '') {
+            alert('Address is required.');
+            isValid = false;
+        }
+
+        if (country.trim() === '') {
+            alert('Country is required.');
+            isValid = false;
+        }
+
+        if (state.trim() === '') {
+            alert('State is required.');
+            isValid = false;
+        }
+
+        if (city.trim() === '') {
+            alert('City is required.');
+            isValid = false;
+        }
+
+        if (!validatePinCode(pin)) {
+            alert('Pin code should have 6 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        return /^[0-9]{10}$/.test(phone);
+    }
+
+    function validatePinCode(pin) {
+        // Check if it's a positive number with exactly 6 digits
+        return /^[0-9]{6}$/.test(pin);
+    }
+</script>
+
+<script>
+    document.getElementById('profile-form').addEventListener('submit', function (event) {
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phno').value;
+
+        let isValid = true;
+
+        if (!validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            isValid = false;
+        }
+
+        if (!validatePhoneNumber(phone)) {
+            alert('Phone number should have 10 digits and no other characters.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    });
+
+    function validateEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+        return emailRegex.test(email);
+    }
+
+    function validatePhoneNumber(phone) {
+        // Regular expression for a 10-digit phone number
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phone);
+    }
+</script>
+
+    {% endblock script %}

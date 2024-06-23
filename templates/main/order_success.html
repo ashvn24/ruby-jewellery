@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% comment %} <div class="container mt-5" id="container">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-lg-3">
+            <div class="list-group">
+                <a href="{% url 'profile' %}" class="list-group-item list-group-item-action ">Account Details</a>
+                <a href="address-section" class="list-group-item list-group-item-action ">Address</a> 
+                <a href="#address-section" class="list-group-item list-group-item-action active">Orders</a>
+                <a href="#address-section" class="list-group-item list-group-item-action">Download</a>
+                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Sign Out</a>
+            </div>
+        </div>
+        <div class = "col-lg-9">
+<h1 class="text-dark text-center">Your Orders</h1>
+{% if orders %}
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <!-- Add more table headers for order details as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td><a href="#" class="order-link">Order #{{ order.id }}</a></td>
+                    <td>{{ order.date }}</td>
+                    <td>₹ {{ order.amount }}</td>
+                    <!-- Add more table cells for order details as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+
+{% else %}
+    <p>You have no orders yet.</p>
+{% endif %} {% endcomment %}
+<div class="container mt-5" style="min-height: 300px;">
+    {% if orders %}
+    {% with last_order=orders.last %}
+        <div class="alert alert-success text-center">
+            <h3 style="color: green;">Order Placed Successfully!</h3>
+            <p>Your order with Order ID: <strong>#{{ last_order.id }}</strong> has been successfully placed.</p>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'order_details' last_order.id %}"class="btn btn-primary btn-lg mr-2">Order Details</a>
+            <a href="{% url 'shop' %}" class="btn btn-secondary btn-lg">Continue Shopping</a>
+        </div>
+    {% endwith %}
+{% else %}
+    <p>No orders found.</p>
+{% endif %}
+</div>
+{% endblock %}

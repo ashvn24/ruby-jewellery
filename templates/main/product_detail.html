@@ -1,0 +1,227 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+<!--== Page Content Wrapper Start ==-->
+<div id="page-content-wrapper" class="p-9">
+    <div class="ruby-container">
+        <div class="row">
+            <!-- Single Product Page Content Start -->
+            <div class="col-lg-12">
+                <div class="single-product-page-content">
+                    <div class="row">
+                        <!-- Product Thumbnail Start -->
+                        <div class="col-lg-5">
+                            <div class="product-thumbnail-wrap">
+                                <div class="product-thumb-carousel owl-carousel">
+                                    
+                                    <div class="single-thumb-item" >
+                                        <a href="single-product.html"><img class="img-fluid"
+                                                                           src="{{prod.product_image.url}}"
+                                                                           alt="Product"/></a>
+                                    </div>
+                                    
+                                    {% for j in prod.product_images_set.all %}
+                                    <div class="single-thumb-item" >
+                                        <a href="single-product.html"><img class="img-fluid" 
+                                                                           src="{{j.images.url}}"
+                                                                           alt="Product"/></a>
+                                    </div>
+                                    {% endfor %}
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Product Thumbnail End -->
+
+                        <!-- Product Details Start -->
+                        
+                        <div class="col-lg-7 mt-5 mt-lg-0">
+                            <div class="product-details">
+                                <h2><a href="single-product.html">{{prod.product_name}}</a></h2>
+                                <input type="text" value="{{prod.id}}" name="ppid" hidden >
+
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-half"></i>
+                                    <i class="fa fa-star-o"></i>
+                                </div>
+
+                                <span class="price">{{prod.price}}</span>
+                                {% if i.stock == 0 %}
+                                <div class="product-info-stock-sku">
+                                    <span class="product-stock-status"style="color:red;">Out of Stock</span>
+                                    <span class="product-sku-status ml-5"><strong>SKU</strong> MH03</span>
+                                </div>
+
+                                <p class="products-desc">{{prod.product_information}}</p>
+
+
+                                {% else %}
+                                <div class="product-info-stock-sku">
+                                    <span class="product-stock-status" >In Stock</span>
+                                    <span class="product-sku-status ml-5"><strong>SKU</strong> MH03</span>
+                                </div>
+
+                                <p class="products-desc">{{prod.product_information|safe}}</p>
+
+                                <div class="product-quantity mt-5 d-flex align-items-center">
+                                    <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ prod.id }}">Add to Cart</a>
+                                </div>
+                                {% endif %}
+                                <div class="product-btn-group d-none d-sm-block product_wish">
+                                    <a class="btn btn-add-to-cart btn-whislist" data-product-id="{{ prod.id }}">+ Add to
+                                        Wishlist</a>
+                                    <a href="single-product.html" class="btn btn-add-to-cart btn-whislist">+ Add to
+                                        Compare</a>
+                                        <div class="modal fade" id="customAlertModal" tabindex="-1" role="dialog" aria-labelledby="customAlertModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-top-right" role="document">
+                                                <div class="modal-content rounded">
+                                                    <div class="modal-header">
+                                                        <h3>Alert</h3>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-center" id="customAlertMessage">
+                                                        <!-- Alert message content goes here -->
+                                                        <strong style="color:green;">Added to Wishlist</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="customAlertModal2" tabindex="-1" role="dialog" aria-labelledby="customAlertModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-top-right" role="document">
+                                                <div class="modal-content rounded">
+                                                    <div class="modal-header">
+                                                        <h3>Alert</h3>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body text-center" id="customAlertMessage2">
+                                                        <!-- Alert message content goes here -->
+                                                        <strong style="color:green;">Added to Cart</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Product Details End -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Product Full Description Start -->
+                            <div class="product-full-info-reviews">
+                                <!-- Single Product tab Menu -->
+                                <nav class="nav" id="nav-tab">
+                                    <a class="active" id="description-tab" data-toggle="tab" href="#description">Description</a>
+                                    <a id="reviews-tab" data-toggle="tab" href="#reviews">Reviews</a>
+                                </nav>
+                                <!-- Single Product tab Menu -->
+
+                                <!-- Single Product tab Content -->
+                                
+                                <div class="tab-content" id="nav-tabContent">
+                                    {% for j in prod.add_description_set.all %}
+                                    <div class="tab-pane fade show active" id="description">
+                                        <p>{{j.add_description|safe}}</p>
+
+                                        
+                                    </div>{% endfor %}
+
+                                    <div class="tab-pane fade" id="reviews">
+                                        <div class="row">
+                                            <div class="col-lg-7">
+                                                <div class="product-ratting-wrap">
+                                                    <div class="pro-avg-ratting">
+                                                        <h4>4.5 <span>(Overall)</span></h4>
+                                                        <span>Based on 9 Comments</span>
+                                                    </div>
+                                                    <div class="ratting-list">
+                                                        <div class="sin-list float-left">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <span>(5)</span>
+                                                        </div>
+                                                        <div class="sin-list float-left">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <span>(3)</span>
+                                                        </div>
+                                                        <div class="sin-list float-left">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <span>(1)</span>
+                                                        </div>
+                                                        <div class="sin-list float-left">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <span>(0)</span>
+                                                        </div>
+                                                        <div class="sin-list float-left">
+                                                            <i class="fa fa-star"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <i class="fa fa-star-o"></i>
+                                                            <span>(0)</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="rattings-wrapper">
+                                                        {% for i in feed %}
+                                                        <div class="sin-rattings">
+                                                            <div class="ratting-author">
+                                                                <h3>{{i.name}}</h3>
+                                                                <div class="ratting-star">
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <i class="fa fa-star"></i>
+                                                                    <span>(5)</span>
+                                                                </div>
+                                                            </div>
+                                                            <p>{{i.review}}</p>
+                                                        </div>
+                                                        {% endfor %} 
+
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Single Product tab Content -->
+                            </div>
+                            <!-- Product Full Description End -->
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <!-- Single Product Page Content End -->
+        </div>
+    </div>
+</div>
+<!--== Page Content Wrapper End ==-->
+{% endblock %}

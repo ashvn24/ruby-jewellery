@@ -1,0 +1,81 @@
+{% extends "base1.html" %}
+{% block style %}
+#map {
+    width: 100%;
+    height: 400px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.contact-form {
+    background: #f7f7f7;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin: 10px 0;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+{% endblock style %}
+{% block content %}
+
+<div id="map">
+    <!-- You can embed your map here using Google Maps, Mapbox, or any other mapping service. -->
+    <!-- Example: <iframe src="https://www.google.com/maps/embed?pb=..."></iframe> -->
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15553.842819444986!2d77.60111205138584!3d12.972442980876137!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae1670f30818e9%3A0x8713b893fe334eb9!2sBangalore%2C%20Karnataka%2C%20India!5e0!3m2!1sen!2sus!4v1642602954723" width="100%" height="400" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+
+</div>
+<div class="container">
+    <h1>Contact Us</h1>
+    <div class="contact-form">
+        <form action="send_email.php" method="post">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

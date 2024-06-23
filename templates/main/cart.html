@@ -1,0 +1,267 @@
+{% extends "base1.html" %}
+{% load cart_tag %}
+
+{% block content %}
+
+<!--== Page Content Wrapper Start ==-->
+<div id="page-content-wrapper" class="p-9">
+    <div class="container">
+        <!-- Cart Page Content Start -->
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Cart Table Area -->
+                <div class="cart-table table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="pro-thumbnail">Thumbnail</th>
+                            <th class="pro-title">Product</th>
+                            <th class="pro-price">Price</th>
+                            <th class="pro-price">Stock</th>
+                            <th class="pro-quantity">Quantity</th>
+                            <th class="pro-subtotal">Total</th>
+                            <th class="pro-remove">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            
+                        {% for key,value in request.session.cart.items %}
+                        <tr id="id{{value.id}}">
+                            <td class="pro-thumbnail"><a href="#"><img class="img-fluid" src="{{value.product_image}}"
+                                                                       alt="Product"/></a></td>
+                            <td class="pro-title"><a href="#">{{value.product_name}}</a></td>
+                            <td class="pro-price"><span>{{value.price}}</span></td>
+                            {% comment %} {% if value.stock%} {% endcomment %}
+                            <td class="pro-title"><a href="#">{{Product.stock}}In stock</a></td>
+                            <td class="pro-quantity">
+                                {% comment %} <div class="pro-qty"><input type="text" value="{{value.quantity}}"></div> {% endcomment %}
+                                <div class ="row ">
+                                    <div class ="col-4">
+                                        <a href = "{% url 'item_decrement' value.product_id %}#id{{value.id}}" class="text-center">-</a>
+                                    </div>
+                                    <div class ="col-4">
+                                        <input type="text" value="{{value.quantity}}" size="1"class = " border-0">
+                                        
+                                    </div>
+                                    <div class ="col-4 cart-detail">
+                                        {% comment %} <a href = "{% url 'item_increment' value.product_id %}#id{{value.id}}" class="text-center">+</a> {% endcomment %}
+                                        <a class="text-center btn increment" data-product-id="{{value.product_id}}">+</a>
+                                        {% comment %} <a class="btn btn-add-to-cart addToCartBtn" data-product-id="{{ i.id }}" >+ Add to Cart</a> {% endcomment %}
+
+                                    </div>
+
+                                </div>
+                            </td>
+                            
+                            <td class="pro-subtotal"><span> {{ value.price|multiply:value.quantity }}</span></td>
+                            <td class="pro-remove"><a href="{% url 'item_clear' key %}#id{{value.id}}"><i class="fa fa-trash-o"></i></a></td>
+                        </tr>
+                        {% endfor %}
+                    
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Cart Update Option -->
+                <div class="cart-update-option d-block d-lg-flex">
+                    <div class="apply-coupon-wrapper">
+                        {% if valid %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>{{Coupon.code}}</strong> {{valid}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                        {% elif invalid %}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{invalid}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                        {% endif %}
+                        <form method="POST" class=" d-block d-md-flex">
+                            {% csrf_token %}
+                            <input type="text" name="coupon" placeholder="Enter Your Coupon Code"/>
+                            <button class="submit btn-add-to-cart">Apply Coupon</button>
+                        </form>
+                    </div>
+                    <div class="cart-update">
+                        <a href="{% url 'cart_clear' %}" class="btn-add-to-cart">Clear Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 ml-auto">
+                <!-- Cart Calculation Area -->
+                <div class="cart-calculator-wrapper">
+                    <h3>Cart Totals</h3>
+                    <div class="cart-calculate-items">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>Sub Total</td>
+                                    <td id="total">{{ cart_total_amount }}</td>
+                                </tr>
+                                {% if cart_total_amount < 500 %} 
+                                <tr>
+                                    <td>Shipping</td>
+                                    
+                                    <td>Free</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="total-amount">{{cart_total_amount}}</td>
+                                </tr>
+                                {% elif valid %}
+                                <tr>
+                                    <td>Shipping</td>
+                                    <td id="shipping-cost">150</td>
+                                </tr>
+                                <tr>
+                                    <td>Discount</td>
+                                    <td id="coupon-discount">{{ Coupon.discount }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="total-amount" id="total-amount"></td>
+                                </tr>
+                                
+
+                                {% else %}
+                                <tr>
+                                    <td>Shipping</td>
+                                    
+                                    <td>₹150</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="total-amount">₹{{cart_total_amount|add:150}}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    
+                    <a href="{% url 'checkout'%}" class="btn-add-to-cart">Proceed To Checkout</a>
+                </div>
+            </div>
+        </div>
+        <!-- Cart Page Content End -->
+    </div>
+</div>
+<!--== Page Content Wrapper End ==-->
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the HTML elements
+        var shippingCostElement = document.getElementById("shipping-cost");
+        var couponDiscountElement = document.getElementById("coupon-discount");
+        var totalAmountElement = document.getElementById("total-amount");
+        var cartTotalAmountElement = document.getElementById("total");
+        // Parse values to numbers
+        var shippingCost = parseFloat(shippingCostElement.textContent);
+        var couponDiscount = parseFloat(couponDiscountElement.textContent);
+        var cartTotalAmount=parseFloat(cartTotalAmountElement.textContent);
+        // Calculate the total amount
+         // Replace this with the actual cart total amount
+        var totalAmount = (cartTotalAmount + shippingCost)-((cartTotalAmount + shippingCost) * couponDiscount)/100;
+        
+
+        // Update the total amount in the HTML
+        totalAmountElement.textContent = totalAmount.toFixed(2); // Format as desired
+    });
+</script>
+
+{% comment %} <scrip>
+    
+    var counter = 0;
+      $(document).on('click', ".increment", function(){
+      
+          var _vm = $(this).closest('.cart-detail');
+          
+        
+          var _productId = $(this).data('product-id'); // Get product ID from data attribute
+      
+          console.log( _productId);
+          counter++;
+          $('#cart-count').text(counter);
+         //ajax
+         $.ajax({
+          url: '/cart/item_increment/',
+          data: {
+              'id': _productId,
+             
+          },
+          dataType: 'json',
+          beforeSend: function(){
+              _vm.attr('disabled', true);
+          },
+          success: function(response) {
+           
+          },
+          error: function(error) {
+              console.log('Error:', error);
+          }
+         });
+      });
+      
+  
+      </script> {% endcomment %}
+
+    
+
+
+<script>
+    $(document).ready(function() {
+        // Function to load the cart content
+        function loadCartContent() {
+            $.ajax({
+                type: "GET",
+                url: "{% url 'cart_detail' %}",  // Replace with your cart view URL
+                dataType: "json",
+                success: function(data) {
+                    // Update the cart content div with the new HTML
+                    $("#cart-content").html(data.cart_html);
+                },
+                error: function() {
+                    // Handle errors if necessary
+                }
+            });
+        }
+    
+        // Call the function to load cart content when the page loads
+        loadCartContent();
+    
+        // Increment button click event
+        $(document).on('click', ".increment", function() {
+            var _vm = $(this).closest('.cart-detail');
+            var _productId = $(this).data('product-id');
+    
+            $.ajax({
+                url: '/cart/item_increment/',
+                data: {
+                    'id': _productId,
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    _vm.attr('disabled', true);
+                },
+                success: function(response) {
+                    // Handle success, e.g., update the cart count and load the cart content
+                    counter++;
+                    $('#cart-count').text(counter);
+                    loadCartContent(); // Reload the cart content after the increment
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+    
+            
+      
+{% endblock script %}
+
+

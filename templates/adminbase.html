@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Ruby Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="{% static 'assets1/vendors/mdi/css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets1/vendors/css/vendor.bundle.base.css' %}">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'assets1/css/style.css' %}">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="{% static 'assets1/images/favicon.ico' %}" />
+    {% comment %} <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"> {% endcomment %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    {% block card %}
+    {% endblock %}
+  </head>
+  <body>
+    
+      <!-- partial:partials/_navbar.html -->
+      {% include 'includes/admin_nav.html' %}
+      <div class="main-panel ">
+        <div class="content-wrapper ">
+          {% comment %} <div class="page-header">
+            <h3 class="page-title"> Form elements </h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Forms</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Form elements</li>
+              </ol>
+            </nav>
+          </div> {% endcomment %}
+          <div class="row">
+        <!-- partial -->
+        {% block content %}
+
+        {% endblock %}
+      </div>
+    </div>
+    </div>
+    </div>
+        <!-- main-panel ends -->
+      
+      <!-- page-body-wrapper ends -->
+    
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    
+    {% block script %}
+    
+    {% endblock%}
+    <script src="{% static 'assets1/js/file-upload.js' %}"></script>
+
+    <script src="{% static 'assets1/vendors/js/vendor.bundle.base.js' %}"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="{% static 'assets1/js/chart.js' %}"></script>
+    <script src="{% static 'assets1/vendors/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'assets1/js/jquery.cookie.js' %}" type="text/javascript"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="{% static 'assets1/js/off-canvas.js' %}"></script>
+    <script src="{% static 'assets1/js/hoverable-collapse.js' %}"></script>
+    <script src="{% static 'assets1/js/misc.js' %}"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="{% static 'assets1/js/dashboard.js' %}"></script>
+    <script src="{% static 'assets1/js/todolist.js' %}"></script>
+    <!-- End custom js for this page -->
+    <script>
+      const myModal = document.getElementById('myModal')
+const myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})
+</script>
+    
+  </body>
+</html>
