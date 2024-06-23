@@ -270,6 +270,7 @@ def cart_add(request):
     product_id=request.GET['id']
     cart = Cart(request)
     Product = product.objects.get(id=product_id)
+    print("cart--",Product)
     count=Product.stock
     cart.add(product=Product)
     return redirect("index")
